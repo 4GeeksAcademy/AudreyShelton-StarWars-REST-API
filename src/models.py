@@ -21,14 +21,15 @@ class User(db.Model):
     
 class Favorites(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
-    planet_id = db.Column(db.Integer, db.ForeignKey('planet.id'))
-    people_id = db.Column(db.Integer, db.ForeignKey('people.id'))
+    people_id = db.Column(db.Integer, db.ForeignKey("people.id"))
+    planet_id = db.Column(db.Integer, db.ForeignKey("planets.id"))
+    user_id = db.Column(db.Integer, db.ForeignKey("user.id"))
 
     
 class People(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
+    favorite_character = db.relationship('Favorites')
   
     def serialize(self):
         return {
@@ -39,7 +40,7 @@ class People(db.Model):
 class Planets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(120), unique=True, nullable=False)
-    
+    favorite_planet = db.relationship('Favorites')
 
     def serialize(self):
         return {

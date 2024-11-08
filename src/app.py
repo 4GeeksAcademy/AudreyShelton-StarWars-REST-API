@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User, Planets, Favorites, People
 #from models import Person
 
 app = Flask(__name__)
@@ -64,7 +64,7 @@ def handle_hello():
 
 #Get one single planet's information
 @app.route('/planets/<int:planet_id>', methods=['GET'])
-def get_user_fav(id):
+def get_planets(id):
     planet_id = Planets.query.filter_by(planet_id = id)
     planets = list(map(lambda x: x.serialize(), planet_id))
     return jsonify(planet_id), 200
@@ -89,7 +89,7 @@ def get_user_fav(id):
 #[POST] /favorite/planet/<int:planet_id> Add a new favorite planet to the current user with the planet id = planet_id.
 @app.route('/users/<int:user_id>/favorite/planet/<int:planet_id>', methods=['POST'])
 def post_favorite_planet(user_id, planet_id):
-    favorite = Favorites(user_id = user_id, planet_id = planet_id = "NULL")
+    favorite = Favorites(user_id = user_id, planet_id = planet_id)
     db.session.add(favorite)
     db.session.commit()
     return jsonify(favorite.serialize()), 200
@@ -98,7 +98,7 @@ def post_favorite_planet(user_id, planet_id):
 #[POST] /favorite/people/<int:people_id> Add new favorite people to the current user with the people id = people_id.
 @app.route('/users/<int:user_id>/favorite/people/<int:people_id>', methods=['POST'])
 def post_favorite_people(user_id, people_id):
-    favorite = Favorites(user_id = user_id, people_id = people_id = "NULL")
+    favorite = Favorites(user_id = user_id, people_id = people_id)
     db.session.add(favorite)
     db.session.commit()
     return jsonify(favorite.serialize()), 200
@@ -116,7 +116,7 @@ def delete_favorite_planet(user_id, planet_id):
 
 #[DELETE] /favorite/people/<int:people_id> Delete a favorite people with the id = people_id.
 @app.route('/favorite/people/<int:planet_id>', methods=['DELETE'])
-def delete_favorite_planet(user_id, people_id):
+def delete_favorite_person(user_id, people_id):
     people = Favorites.query.filter_by(user_id = user_id, people_id = people_id).first()
     db.session.delete(people)
     db.session.commit()
